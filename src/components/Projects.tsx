@@ -19,7 +19,7 @@ const Projects: React.FC = () => {
       description: 'A sleek music streaming app with playlist creation, track searching, and personalized recommendations. Built with React, Node.js, and MongoDB.',
       image: 'https://images.pexels.com/photos/2746187/pexels-photo-2746187.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tags: ['React', 'Node.js', 'Express', 'MongoDB'],
-      demoLink: 'songweb-app.netlify.app',
+      demoLink: 'https://songweb-app.netlify.app/',
       codeLink: 'https://github.com/etsubie/SongApp'
     },
     {
@@ -28,7 +28,7 @@ const Projects: React.FC = () => {
       description: 'A social platform to capture and share memorable moments with friends and family. Features image uploads, comments, and location tagging.',
       image: 'https://images.pexels.com/photos/3772511/pexels-photo-3772511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2',
       tags: ['React', 'styled-components', 'Express', 'MongoDB'],
-      demoLink: 'memories-webb-app.netlify.app',
+      demoLink: 'https://songweb-app.netlify.app/',
       codeLink: 'https://github.com/etsubie/SocialMediaApp'
     },
     {

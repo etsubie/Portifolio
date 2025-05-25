@@ -141,8 +141,8 @@ const Contact: React.FC = () => {
                     type="submit"
                     className={`w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2`}
                   >
-                    Send Message
-                    <Send size={18} />
+                        Send Message
+                        <Send size={18} />
                   </button>
                 </form>
               )}
