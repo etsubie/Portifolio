@@ -163,6 +163,58 @@ INSERT INTO site_settings (key, value) VALUES
 )
 ON CONFLICT (key) DO NOTHING;
 
+-- ════════════════════════════════════════════════
+-- Storage bucket for uploaded images
+-- ════════════════════════════════════════════════
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('portfolio-images', 'portfolio-images', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Public read
+CREATE POLICY "Public read portfolio images"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'portfolio-images');
+
+-- Authenticated upload
+CREATE POLICY "Auth upload portfolio images"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'portfolio-images' AND auth.role() = 'authenticated');
+
+-- Authenticated update
+CREATE POLICY "Auth update portfolio images"
+  ON storage.objects FOR UPDATE
+  USING (bucket_id = 'portfolio-images' AND auth.role() = 'authenticated');
+
+-- Authenticated delete
+CREATE POLICY "Auth delete portfolio images"
+  ON storage.objects FOR DELETE
+  USING (bucket_id = 'portfolio-images' AND auth.role() = 'authenticated');
+
+-- ────────────────────────────────────────────────
+-- Seed: services + footer settings
+-- ────────────────────────────────────────────────
+
+INSERT INTO site_settings (key, value, updated_at)
+VALUES (
+  'services',
+  '[
+    {"id":"svc-1","icon":"Code2","title":"Frontend Development","description":"Building modern, responsive user interfaces with React and TypeScript that deliver exceptional user experiences across all devices."},
+    {"id":"svc-2","icon":"Server","title":"Backend Development","description":"Developing robust server-side applications and RESTful APIs using Laravel, Node.js, and Express for reliable, scalable systems."},
+    {"id":"svc-3","icon":"Layers","title":"Full-Stack Solutions","description":"End-to-end application development from concept to deployment, combining frontend and backend expertise for complete solutions."}
+  ]'::jsonb,
+  NOW()
+)
+ON CONFLICT (key) DO NOTHING;
+
+INSERT INTO site_settings (key, value, updated_at)
+VALUES (
+  'footer',
+  '{"text":"Built with","authorName":"Etsub"}'::jsonb,
+  NOW()
+)
+ON CONFLICT (key) DO NOTHING;
+
 -- ────────────────────────────────────────────────
 -- Done! Now go to Authentication → Users and create
 -- an admin user with email + password.

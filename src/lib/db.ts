@@ -9,6 +9,8 @@ import type {
   HeroContent,
   AboutContent,
   ContactContent,
+  ServiceItem,
+  FooterContent,
 } from '../context/PortfolioContext';
 
 // ════════════════════════════════════════════════
@@ -139,7 +141,7 @@ export async function fetchSetting<T>(key: string): Promise<T | null> {
   return (data?.value as T) ?? null;
 }
 
-export async function saveSetting(key: string, value: HeroContent | AboutContent | ContactContent): Promise<void> {
+export async function saveSetting(key: string, value: HeroContent | AboutContent | ContactContent | ServiceItem[] | FooterContent): Promise<void> {
   const { error } = await supabase
     .from('site_settings')
     .upsert({ key, value, updated_at: new Date().toISOString() });

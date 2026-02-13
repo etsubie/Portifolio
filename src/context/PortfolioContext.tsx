@@ -33,6 +33,8 @@ export interface HeroContent {
   roles: string[];
   description: string;
   stats: { value: string; label: string }[];
+  profileImage?: string;
+  resumeUrl?: string;
 }
 
 export interface Experience {
@@ -42,6 +44,7 @@ export interface Experience {
   period: string;
   description: string;
   isCurrent: boolean;
+  image?: string;
 }
 
 export interface EducationItem {
@@ -50,6 +53,7 @@ export interface EducationItem {
   institution: string;
   period: string;
   description: string;
+  image?: string;
 }
 
 export interface AboutContent {
@@ -70,6 +74,18 @@ export interface ContactContent {
   phone: string;
   location: string;
   socials: SocialLink[];
+}
+
+export interface ServiceItem {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface FooterContent {
+  text: string;
+  authorName: string;
 }
 
 // ════════════════════════════════════════════════
@@ -134,6 +150,12 @@ interface PortfolioContextType {
   contactContent: ContactContent | null;
   saveContactContent: (c: ContactContent) => Promise<void>;
 
+  services: ServiceItem[];
+  saveServices: (s: ServiceItem[]) => Promise<void>;
+
+  footerContent: FooterContent | null;
+  saveFooterContent: (f: FooterContent) => Promise<void>;
+
   /** true while the initial fetch from Supabase is in progress */
   loading: boolean;
   /** non-null when the initial fetch failed */
@@ -159,6 +181,8 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [heroContent, setHeroContent] = useState<HeroContent | null>(null);
   const [aboutContent, setAboutContent] = useState<AboutContent | null>(null);
   const [contactContent, setContactContent] = useState<ContactContent | null>(null);
+  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [footerContent, setFooterContent] = useState<FooterContent | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -166,12 +190,14 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
   useEffect(() => {
     const load = async () => {
       try {
-        const [dbProjects, dbSkills, dbHero, dbAbout, dbContact] = await Promise.all([
+        const [dbProjects, dbSkills, dbHero, dbAbout, dbContact, dbServices, dbFooter] = await Promise.all([
           db.fetchProjects(),
           db.fetchSkillCategories(),
           db.fetchSetting<HeroContent>('hero'),
           db.fetchSetting<AboutContent>('about'),
           db.fetchSetting<ContactContent>('contact'),
+          db.fetchSetting<ServiceItem[]>('services'),
+          db.fetchSetting<FooterContent>('footer'),
         ]);
 
         setProjects(dbProjects);
@@ -179,6 +205,8 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
         setHeroContent(dbHero);
         setAboutContent(dbAbout);
         setContactContent(dbContact);
+        setServices(dbServices ?? []);
+        setFooterContent(dbFooter);
       } catch (err) {
         console.error('[PortfolioContext] Failed to load from Supabase:', err);
         setError(err instanceof Error ? err.message : 'Failed to load data');
@@ -235,6 +263,16 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
     setContactContent(c);
   }, []);
 
+  const saveServices = useCallback(async (s: ServiceItem[]) => {
+    await db.saveSetting('services', s);
+    setServices(s);
+  }, []);
+
+  const saveFooterContent = useCallback(async (f: FooterContent) => {
+    await db.saveSetting('footer', f);
+    setFooterContent(f);
+  }, []);
+
   return (
     <PortfolioContext.Provider
       value={{
@@ -243,6 +281,8 @@ export const PortfolioProvider: React.FC<{ children: ReactNode }> = ({ children 
         heroContent, saveHeroContent,
         aboutContent, saveAboutContent,
         contactContent, saveContactContent,
+        services, saveServices,
+        footerContent, saveFooterContent,
         loading,
         error,
       }}

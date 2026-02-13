@@ -11,6 +11,7 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Admin from './pages/Admin';
+import Sidebar from './components/Sidebar';
 
 function Portfolio() {
   const { loading, error } = usePortfolio();
@@ -43,17 +44,35 @@ function Portfolio() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white relative">
+      {/* Subtle background texture */}
+      <div className="fixed inset-0 opacity-[0.015] dark:opacity-[0.03] pointer-events-none" style={{
+        backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+      }} />
+
       <Header />
-      <main>
-        <Hero />
-        <About />
-        <Services />
-        <Skills />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
+
+      {/* Layout: sidebar + content side by side inside a centered container */}
+      <div className="relative max-w-7xl mx-auto lg:flex lg:gap-8 lg:px-8">
+        {/* Sidebar — sticky, scrolls with content */}
+        <div className="hidden lg:block lg:w-[260px] flex-shrink-0 pt-24 pb-12">
+          <Sidebar />
+        </div>
+
+        {/* Main content */}
+        <main className="flex-1 min-w-0">
+          <Hero />
+          <div className="space-y-0">
+            <About />
+            <Services />
+            <Skills />
+            <Projects />
+            <Contact />
+          </div>
+          <Footer />
+        </main>
+      </div>
     </div>
   );
 }
